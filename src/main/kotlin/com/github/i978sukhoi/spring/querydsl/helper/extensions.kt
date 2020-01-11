@@ -1,23 +1,42 @@
 package com.github.i978sukhoi.spring.querydsl.helper
 
+//import com.terafunding.cloud.http.PageParam
+//import com.terafunding.cloud.http.PageResult
+import com.querydsl.core.BooleanBuilder
 import com.querydsl.core.types.FactoryExpression
+import com.querydsl.core.types.Predicate
 import com.querydsl.core.types.dsl.Coalesce
-import com.querydsl.core.types.dsl.ComparableExpressionBase
 import com.querydsl.core.types.dsl.Expressions
 import com.querydsl.core.types.dsl.NumberPath
 import com.querydsl.jpa.FactoryExpressionTransformer
 import com.querydsl.jpa.JPQLQuery
 import com.querydsl.jpa.impl.JPAQuery
-//import com.terafunding.cloud.http.PageParam
-//import com.terafunding.cloud.http.PageResult
 import org.hibernate.jpa.QueryHints
 import org.hibernate.query.Query
-import org.springframework.data.domain.Page
-import org.springframework.data.domain.PageRequest
-import org.springframework.data.domain.Pageable
-import org.springframework.data.domain.Sort
-import org.springframework.data.querydsl.QSort
 import java.util.stream.Stream
+
+/**
+ * 보통 입력된 값에 따라 조건적으로 where 절이 추가되기 때문에 이를 chain call 형태로 이용할 수 있게 하기 위한 확장.
+ *
+ * @param condition 이 조건이 true 일 때 만 [predicate] 가 [BooleanBuilder] 에 추가된다.
+ * @param predicate 추가될
+ */
+fun BooleanBuilder.andIf(condition: Boolean, predicate: Predicate): BooleanBuilder {
+    if (condition) and(predicate)
+    return this
+}
+
+/**
+ * [Predicate] 를 직접 입력받는 [andIf] 를 이용할 때는 항상 predicate 가 생성(평가)될 수 밖에 없으므로
+ * 이 비용을 무시하기 힘든 경우라면 lambda 를 입력받아서 [condition] 에 따라 predicate 생성이 불필요한 상황을 지원한다.
+ *
+ * @param condition 이 조건이 true 일 때 만 [predicateLambda] 를 실행하여 [BooleanBuilder] 에 추가된다.
+ * @param predicateLambda [Predicate]를 return 하는 lambda function
+ */
+fun BooleanBuilder.andIf(condition: Boolean, predicateLambda: () -> Predicate): BooleanBuilder {
+    if (condition) and(predicateLambda())
+    return this
+}
 
 /**
  * 결과가 없다면 sum() 결과는 null 일 수 있는데 이를 null 이 아닌 값([nullValue])으로 가져오기 위해

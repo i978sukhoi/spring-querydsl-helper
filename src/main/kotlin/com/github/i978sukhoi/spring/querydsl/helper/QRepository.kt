@@ -129,32 +129,10 @@ abstract class QRepository<T, ID, Q : EntityPathBase<T>>(
      *  ).orderBy(table.id.desc()).fetch()
      * ```
      * @param initial 초기조건. null 을 기본값으로 하기 때문에 이 파라미터 없이 호출해도 된다.
+     * @see [andIf]
      */
     fun builder(initial: Predicate? = null) = (if (initial == null) BooleanBuilder()
     else BooleanBuilder().and(initial))!!
-
-    /**
-     * 보통 입력된 값에 따라 조건적으로 where 절이 추가되기 때문에 이를 chain call 형태로 이용할 수 있게 하기 위한 확장.
-     *
-     * @param condition 이 조건이 true 일 때 만 [predicate] 가 [BooleanBuilder] 에 추가된다.
-     * @param predicate 추가될
-     */
-    fun BooleanBuilder.andIf(condition: Boolean, predicate: Predicate): BooleanBuilder {
-        if (condition) and(predicate)
-        return this
-    }
-
-    /**
-     * [Predicate] 를 직접 입력받는 [andIf] 를 이용할 때는 항상 predicate 가 생성(평가)될 수 밖에 없으므로
-     * 이 비용을 무시하기 힘든 경우라면 lambda 를 입력받아서 [condition] 에 따라 predicate 생성이 불필요한 상황을 지원한다.
-     *
-     * @param condition 이 조건이 true 일 때 만 [predicateLambda] 를 실행하여 [BooleanBuilder] 에 추가된다.
-     * @param predicateLambda [Predicate]를 return 하는 lambda function
-     */
-    fun BooleanBuilder.andIf(condition: Boolean, predicateLambda: () -> Predicate): BooleanBuilder {
-        if (condition) and(predicateLambda())
-        return this
-    }
 
     /**
      * @see QuerydslRepositorySupport.delete
@@ -201,12 +179,11 @@ abstract class QRepository<T, ID, Q : EntityPathBase<T>>(
         ) { query.fetchCount() }
     }
 
-    fun <O> findAll(
-        query: JPQLQuery<O>, pageable: Pageable
-    ) = PageableExecutionUtils.getPage(
-        querydsl.applyPagination<O>(pageable, query).fetch(),
-        pageable
-    ) { query.fetchCount() }
+    fun <O> findAll(query: JPQLQuery<O>, pageable: Pageable): Page<O> =
+        PageableExecutionUtils.getPage(
+            querydsl.applyPagination<O>(pageable, query).fetch(),
+            pageable
+        ) { query.fetchCount() }
 
     /**
      * @param queryComposer [JPQLQuery]을 파라미터로 하는 lambda 를 넘기면 호출해준다. 주로 join 등을 처리하려고 할때 쓰임
