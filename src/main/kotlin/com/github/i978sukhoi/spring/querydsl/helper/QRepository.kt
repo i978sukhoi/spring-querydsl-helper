@@ -24,8 +24,8 @@ import java.util.*
 import javax.persistence.EntityManager
 
 /**
- * QuerydslRepositorySupport 를 직접 상속받거나 QuerydslJpaPredicateExecutor 를 구현한 interface 를 통해 spring 구현체를 사용하는 방식이
- * 코드 타이핑 양이나 코드 보기에 불편함이 있어서 ...
+ * [QuerydslRepositorySupport] 를 직접 상속받거나 [QuerydslJpaPredicateExecutor] 를 구현한 interface 를 통해
+ * spring 구현체를 사용하는 방식이 코드 타이핑 양이나 코드 보기에 불편함이 있어서 ...
  * - 자주 쓰는 [findAll], [findOne], [count] 등의 메소드를 추가 함.
  * - Q class 를 내부 변수([table])로 갖도록 하여 매번 변수생성을 하지 않아도 되도록 함.
  * - [BooleanBuilder] 의 확장함수 [andIf] 를 통해 조건적으로 [Predicate]를 추가하기 용이하도록 함.
@@ -38,12 +38,11 @@ import javax.persistence.EntityManager
  * ```
  * @Repository
  * class NoticeRepository(entityManager: EntityManager) :
- *      TeraRepository<Notice, Int, QNotice>(QNotice.notice, entityManager) {
+ *      QRepository<Notice, Int, QNotice>(QNotice.notice, entityManager) {
  *
- *      fun findTop10ByFilters(name:String?, type: String?) = findAll(
- *          builder()
- *              .andIf(!name.isNullOrEmpty(), table.name.eq(name))
- *              .andIf(!type.isNullOrEmpty(), table.type.eq(type))
+ *      fun findTop10ByFilters(type: String, name:String?) = findAll(
+ *          builder(table.type.eq(type))
+ *              .andIf(!name.isNullOrEmpty(), { table.name.like("%$name%") })
  *      , table.id.desc(), 10L)
  * }
  * ```
@@ -58,14 +57,12 @@ import javax.persistence.EntityManager
  * @see QuerydslRepositorySupport
  * @see QuerydslJpaPredicateExecutor
  */
-@Suppress("UNCHECKED_CAST")
+@Suppress("UNCHECKED_CAST", "MemberVisibilityCanBePrivate", "SpellCheckingInspection")
 abstract class QRepository<T, ID, Q : EntityPathBase<T>>(
-    @Suppress("SpringJavaInjectionPointsAutowiringInspection")
     protected val table: Q,
     protected val entityManager: EntityManager
 ) : SimpleJpaRepository<T, ID>(table.type!! as Class<T>, entityManager) {
 
-    @Suppress("SpellCheckingInspection", "LeakingThis")
     protected val querydsl = Querydsl(entityManager, PathBuilderFactory().create(table.type))
 
     /**
