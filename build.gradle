@@ -69,7 +69,7 @@ publishing {
             url = uri("https://maven.pkg.github.com/i978sukhoi/spring-querydsl-helper")
             credentials {
                 username = "i978sukhoi"
-                password = ""
+                password = "aae9f5661eaa6a3fd78d264bcc3b914b506112b7"
             }
         }
     }

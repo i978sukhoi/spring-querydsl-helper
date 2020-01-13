@@ -1,11 +1,11 @@
 # Spring QueryDSL helper
 
 # QRepositoy
-Make repository class without interface and also use SimpleJpaRepository with convenience.
+`Make repository class without interface and also use SimpleJpaRepository with convenience.`
 
 
-[Spring Data JPA](https://docs.spring.io/spring-data/jpa/docs/current/reference/html/#core.extensions.querydsl) already has greate support for QueryDSL.
-but inheriting [QuerydslRepositorySupport](https://docs.spring.io/spring-data/data-jpa/docs/current/api/org/springframework/data/jpa/repository/support/QuerydslRepositorySupport.html)
+[Spring Data JPA](https://docs.spring.io/spring-data/jpa/docs/current/reference/html/#core.extensions.querydsl)
+already has great support for QueryDSL. but inheriting [QuerydslRepositorySupport](https://docs.spring.io/spring-data/data-jpa/docs/current/api/org/springframework/data/jpa/repository/support/QuerydslRepositorySupport.html)
 or [QuerydslJpaPredicateExecutor](https://docs.spring.io/spring-data/data-jpa/docs/current/api/org/springframework/data/jpa/repository/support/QuerydslJpaPredicateExecutor.html) 
 is little messy. 
 
