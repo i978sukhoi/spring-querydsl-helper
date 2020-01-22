@@ -1,7 +1,7 @@
 # Spring QueryDSL helper
 
 # QRepositoy
-`Make repository class without interface and also use SimpleJpaRepository with convenience.`
+`Write repository class without interface and also can use SimpleJpaRepository with convenience.`
 
 
 [Spring Data JPA](https://docs.spring.io/spring-data/jpa/docs/current/reference/html/#core.extensions.querydsl)
