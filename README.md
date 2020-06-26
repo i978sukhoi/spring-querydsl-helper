@@ -47,7 +47,7 @@ val predicate = BooleanBuilder()
 because `sum(columnName)` can be null, should use as `coalesce(sum(columnName), 0)` in many cases.
 
 ## JPQLQuery<T>.selectTuple()
-shortcut for [JPQLQuery.select] by constructor projection of Tuple**N**  
+shortcut for [JPQLQuery.select](http://www.querydsl.com/static/querydsl/latest/apidocs/com/querydsl/jpa/JPQLQuery.html#select-com.querydsl.core.types.Expression...-) by constructor projection of Tuple*N*  
 ```kotlin
 querydsl.createQuery(table)
     .selectTuple(table.myGroup, table.id.count())
