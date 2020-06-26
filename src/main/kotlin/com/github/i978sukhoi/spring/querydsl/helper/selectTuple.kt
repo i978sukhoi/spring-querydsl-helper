@@ -12,7 +12,7 @@ import java.lang.reflect.ParameterizedType
  * shortcut for [JPQLQuery.select] by constructor projection of [Tuple2].
  * ```kotlin
  * val groupCounts: List<Tuple2<String, Long>> = querydsl.createQuery(table)
- *      .select2(table.myGroup, table.id.count())
+ *      .selectTuple(table.myGroup, table.id.count())
  *      .groupBy(table.myGroup)
  *      .fetch()
  * ```

@@ -31,7 +31,7 @@ class NoticeRepository(entityManager: EntityManager) :
 # Extensions
 fallowing kotlin extension functions provided.
 
-## BooleanBuilder.andIf
+## BooleanBuilder.andIf()
 add where clue in conditionally within chain call
 
 ```kotlin
@@ -43,8 +43,33 @@ val predicate = BooleanBuilder()
     }   
 ```
 
-## NumberPath.nullSafeSum
+## NumberPath.nullSafeSum()
 because `sum(columnName)` can be null, should use as `coalesce(sum(columnName), 0)` in many cases.
+
+## JPQLQuery<T>.selectTuple()
+shortcut for [JPQLQuery.select] by constructor projection of Tuple**N**  
+```kotlin
+querydsl.createQuery(table)
+    .selectTuple(table.myGroup, table.id.count())
+    .groupBy(table.myGroup)
+    .fetch()    // = List<Tuple2<String, Long>>
+    .forEach {
+        println(it.v1, it.v2)
+    }
+// is equivalent below
+querydsl.createQuery(table)
+    .select(
+        Projections.constructor(
+            Tuple2("", 0L).javaClass,
+            table.myGroup, table.id.count()
+        )
+    )
+    .groupBy(table.myGroup)
+    .fetch()    // = List<Tuple2<String, Long>>
+    .forEach {
+        println(it.v1, it.v2)
+    }
+```
 
 ## JPQLQuery.forEach (hibernate only)
 Hibernate already has [stream](https://docs.jboss.org/hibernate/orm/5.4/javadocs/org/hibernate/query/Query.html#stream--) support. but, QueryDSL does not.
